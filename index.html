@@ -1,96 +1,387 @@
-import { useState, useEffect } from "react";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SQLEsencial – Curso Express en 4 Clases</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-const stats = [
-  { value: "73%", label: "de los roles en Data/IA requieren SQL como habilidad base" },
-  { value: "4x", label: "más empleable con SQL + IA que con IA sola" },
-  { value: "2027", label: "año estimado donde SQL será tan esencial como Excel" },
-];
+    :root {
+      --gold: #d4a843;
+      --gold-dark: #c49a30;
+      --bg: #0a0a0f;
+      --bg2: #0f0e0a;
+      --bg3: #12100a;
+      --border: #2a2010;
+      --text: #e8e4dc;
+      --muted: #6a6050;
+      --muted2: #9a9080;
+    }
 
-const modules = [
-  { num: "01", title: "Fundamentos & Consultas", desc: "SELECT, FROM, WHERE. Tu primera conversación con los datos." },
-  { num: "02", title: "Filtros & Ordenamiento", desc: "ORDER BY, GROUP BY, HAVING. Dominá el orden del caos." },
-  { num: "03", title: "JOINs & Subconsultas", desc: "Conectá tablas, construí insights. La habilidad que separa al analista del curioso." },
-  { num: "04", title: "Agregaciones & Modelado", desc: "Transformá datos crudos en decisiones. El lenguaje que habla con la IA." },
-];
+    html { scroll-behavior: smooth; }
 
-const reasons = [
-  { icon: "🧠", title: "La IA habla SQL", body: "ChatGPT, Copilot, los agentes de datos, todos generan y ejecutan SQL. Si no lo entendés, no podés auditar ni corregir lo que la IA produce." },
-  { icon: "🔍", title: "Los datos son el nuevo petróleo — SQL es la perforadora", body: "Cualquier empresa con datos (todas) necesita personas que puedan extraerlos, filtrarlos y analizarlos. SQL es esa herramienta." },
-  { icon: "⚡", title: "El mercado ya lo está exigiendo", body: "Analistas, marketers, PMs, incluso vendedores con acceso a dashboards: todos los que saben SQL toman mejores decisiones más rápido." },
-  { icon: "🚀", title: "Multiplica tu conocimiento de IA", body: "Aprendiste conceptos de IA. SQL es el puente entre esa teoría y los datos reales. Sin él, la IA flota en el aire." },
-];
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+    }
 
-export default function App() {
-  const [visible, setVisible] = useState(false);
+    /* HERO */
+    .hero {
+      position: relative;
+      background: linear-gradient(160deg, #0a0a0f 0%, #12100e 40%, #1a1205 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 80px 24px 100px;
+      text-align: center;
+      overflow: hidden;
+    }
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      opacity: 0.06;
+      background-image:
+        linear-gradient(var(--gold) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .badge {
+      display: inline-block;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 4px;
+      padding: 6px 20px;
+      margin-bottom: 40px;
+      font-family: monospace;
+      position: relative;
+      animation: fadeUp 0.6s ease 0.1s both;
+    }
+    .hero h1 {
+      font-size: clamp(34px, 7vw, 78px);
+      font-weight: 700;
+      line-height: 1.05;
+      margin: 0 auto 24px;
+      max-width: 900px;
+      position: relative;
+      text-shadow: 0 0 40px rgba(212,168,67,0.35);
+      animation: fadeUp 0.6s ease 0.25s both;
+    }
+    .hero h1 span { color: var(--gold); }
+    .hero p {
+      font-size: clamp(16px, 2.5vw, 21px);
+      color: var(--muted2);
+      max-width: 600px;
+      margin: 0 auto 48px;
+      line-height: 1.75;
+      position: relative;
+      animation: fadeUp 0.6s ease 0.4s both;
+    }
+    .cta-wrap { animation: fadeUp 0.6s ease 0.55s both; position: relative; }
+    .cta-btn {
+      display: inline-block;
+      background: var(--gold-dark);
+      color: #0a0a0f;
+      font-weight: 700;
+      font-size: 17px;
+      padding: 18px 48px;
+      letter-spacing: 1px;
+      text-decoration: none;
+      font-family: monospace;
+      transition: background 0.2s, transform 0.2s;
+    }
+    .cta-btn:hover { background: var(--gold); transform: scale(1.03); }
+    .cta-sub {
+      margin-top: 14px;
+      color: #5a5040;
+      font-size: 13px;
+      font-family: monospace;
+    }
 
-  useEffect(() => {
-    setTimeout(() => setVisible(true), 100);
-  }, []);
+    /* ALERTA */
+    .alert-bar {
+      background: #12100a;
+      border-top: 2px solid var(--gold);
+      border-bottom: 2px solid var(--gold);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .alert-bar p {
+      font-size: clamp(13px, 2vw, 17px);
+      color: var(--gold);
+      font-family: monospace;
+      letter-spacing: 0.5px;
+      max-width: 820px;
+      margin: 0 auto;
+      line-height: 1.65;
+    }
 
-  return (
-    <div style={{
-      fontFamily: "'Georgia', 'Times New Roman', serif",
-      background: "#0a0a0f",
-      color: "#e8e4dc",
-      minHeight: "100vh",
-      overflowX: "hidden",
-    }}>
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(32px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes pulse {
-          0%, 100% { opacity: 1; }
-          50% { opacity: 0.4; }
-        }
-        @keyframes scanline {
-          0% { transform: translateY(-100%); }
-          100% { transform: translateY(100vh); }
-        }
-        .fade-up { animation: fadeUp 0.8s ease forwards; }
-        .delay-1 { animation-delay: 0.1s; opacity: 0; }
-        .delay-2 { animation-delay: 0.3s; opacity: 0; }
-        .delay-3 { animation-delay: 0.5s; opacity: 0; }
-        .delay-4 { animation-delay: 0.7s; opacity: 0; }
-        .delay-5 { animation-delay: 0.9s; opacity: 0; }
-        .card:hover { transform: translateY(-4px); transition: transform 0.3s ease; }
-        .cta-btn:hover { background: #d4a843 !important; transform: scale(1.03); }
-        .cta-btn { transition: all 0.2s ease; }
-        .glow { text-shadow: 0 0 40px rgba(212,168,67,0.4); }
-      `}</style>
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1px;
+      background: #1e1a10;
+      border-bottom: 1px solid var(--border);
+    }
+    .stat-item {
+      background: #0d0c08;
+      padding: 48px 28px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: clamp(40px, 6vw, 64px);
+      font-weight: 700;
+      color: var(--gold);
+      line-height: 1;
+      margin-bottom: 10px;
+    }
+    .stat-label { color: var(--muted); font-size: 14px; line-height: 1.55; }
 
-      {/* HERO */}
-      <div style={{
-        position: "relative",
-        background: "linear-gradient(160deg, #0a0a0f 0%, #12100e 40%, #1a1205 100%)",
-        borderBottom: "1px solid #2a2010",
-        padding: "80px 24px 100px",
-        textAlign: "center",
-        overflow: "hidden",
-      }}>
-        {/* Grid pattern */}
-        <div style={{
-          position: "absolute", inset: 0, opacity: 0.06,
-          backgroundImage: "linear-gradient(#d4a843 1px, transparent 1px), linear-gradient(90deg, #d4a843 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }} />
+    /* REASONS */
+    .section { padding: 80px 24px; max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-family: monospace;
+      color: var(--gold);
+      font-size: 11px;
+      letter-spacing: 4px;
+      margin-bottom: 14px;
+      text-align: center;
+    }
+    .section-title {
+      font-size: clamp(26px, 4vw, 46px);
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .section-title span { color: var(--gold); }
 
-        <div className="fade-up delay-1" style={{ position: "relative" }}>
-          <div style={{
-            display: "inline-block",
-            border: "1px solid #d4a843",
-            color: "#d4a843",
-            fontSize: "11px",
-            letterSpacing: "4px",
-            padding: "6px 20px",
-            marginBottom: "40px",
-            fontFamily: "monospace",
-          }}>
-            EXCLUSIVO · SOLO 70 CUPOS · PARAGUAY
-          </div>
-        </div>
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      padding: 34px 26px;
+      transition: transform 0.25s;
+    }
+    .card:hover { transform: translateY(-4px); }
+    .card-icon { font-size: 30px; margin-bottom: 14px; }
+    .card h3 { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: var(--text); }
+    .card p { color: var(--muted); font-size: 15px; line-height: 1.7; }
 
+    /* MODULES */
+    .modules-section {
+      background: #080807;
+      border-top: 1px solid #1e1a10;
+      border-bottom: 1px solid #1e1a10;
+      padding: 80px 24px;
+    }
+    .modules-inner { max-width: 760px; margin: 0 auto; }
+    .module-item { display: flex; gap: 22px; }
+    .module-left { display: flex; flex-direction: column; align-items: center; }
+    .module-num {
+      width: 48px; height: 48px; flex-shrink: 0;
+      border: 2px solid var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-family: monospace; font-size: 12px; color: var(--gold); font-weight: 700;
+    }
+    .module-line { width: 1px; background: var(--border); flex-grow: 1; min-height: 36px; }
+    .module-body { padding-bottom: 36px; padding-top: 8px; }
+    .module-body h3 { font-size: 19px; font-weight: 700; color: var(--text); margin-bottom: 8px; }
+    .module-body p { color: var(--muted); font-size: 15px; line-height: 1.65; }
+
+    /* QUOTE */
+    .quote-section { padding: 80px 24px; max-width: 780px; margin: 0 auto; text-align: center; }
+    blockquote {
+      border-left: 3px solid var(--gold);
+      text-align: left;
+      padding: 30px 38px;
+      background: var(--bg2);
+      margin: 0 0 48px;
+      font-style: italic;
+      font-size: clamp(16px, 2.5vw, 21px);
+      color: #c8c0b0;
+      line-height: 1.75;
+    }
+    blockquote strong { color: var(--gold); font-style: normal; }
+    .quote-text { color: var(--muted); font-size: 16px; line-height: 1.85; }
+    .quote-text span { color: var(--muted2); }
+
+    /* CTA FINAL */
+    #inscripcion {
+      background: linear-gradient(160deg, #12100a 0%, #1a1508 100%);
+      border-top: 2px solid var(--gold);
+      padding: 80px 24px;
+      text-align: center;
+    }
+    .price-box {
+      display: inline-block;
+      border: 1px solid #3a3020;
+      padding: 30px 48px;
+      margin-bottom: 40px;
+      background: #0a0908;
+    }
+    .price-label { color: #5a5040; font-size: 12px; letter-spacing: 2px; font-family: monospace; margin-bottom: 8px; }
+    .price-value { font-size: clamp(36px, 6vw, 64px); font-weight: 700; color: var(--gold); line-height: 1; }
+    .price-sub { color: #4a4030; font-size: 13px; font-family: monospace; margin-top: 8px; }
+    .cta-final-title { font-size: clamp(28px, 5vw, 54px); font-weight: 700; line-height: 1.1; margin-bottom: 14px; }
+    .cta-final-title span { color: var(--gold); }
+    .cta-final-sub { color: var(--muted); font-size: 16px; margin-bottom: 48px; }
+    .cta-note { margin-top: 22px; color: #3a3020; font-size: 13px; font-family: monospace; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="badge">EXCLUSIVO · SOLO 70 CUPOS · PARAGUAY</div>
+  <h1>Sabés de IA.<br><span>¿Pero podés hablarle</span><br>a los datos?</h1>
+  <p>SQL es el idioma que conecta tu conocimiento de inteligencia artificial con el mundo real de los datos. Sin él, la IA es teoría. Con él, es poder.</p>
+  <div class="cta-wrap">
+    <a href="#inscripcion" class="cta-btn">QUIERO INSCRIBIRME →</a>
+    <div class="cta-sub">Gs. 400.000 IVA incluido · 4 clases prácticas</div>
+  </div>
+</section>
+
+<!-- ALERTA -->
+<div class="alert-bar">
+  <p>⚠ &nbsp; El mercado laboral no espera. Cada mes sin SQL es un mes que otros se adelantan. Los algoritmos ya reemplazan tareas — quienes dominan los datos los <em>dirigen</em>.</p>
+</div>
+
+<!-- STATS -->
+<div class="stats">
+  <div class="stat-item">
+    <div class="stat-value">73%</div>
+    <div class="stat-label">de los roles en Data/IA requieren SQL como habilidad base</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">4×</div>
+    <div class="stat-label">más empleable con SQL + IA que con IA sola</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-value">2027</div>
+    <div class="stat-label">año estimado donde SQL será tan esencial como Excel</div>
+  </div>
+</div>
+
+<!-- POR QUÉ SQL -->
+<div class="section">
+  <div class="section-label">EL ARGUMENTO</div>
+  <h2 class="section-title">Por qué SQL no es opcional<br><span>en la era de la IA</span></h2>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-icon">🧠</div>
+      <h3>La IA habla SQL</h3>
+      <p>ChatGPT, Copilot, los agentes de datos — todos generan y ejecutan SQL. Si no lo entendés, no podés auditar ni corregir lo que la IA produce.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔍</div>
+      <h3>Los datos son el nuevo petróleo — SQL es la perforadora</h3>
+      <p>Cualquier empresa con datos necesita personas que puedan extraerlos, filtrarlos y analizarlos. SQL es esa herramienta.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">⚡</div>
+      <h3>El mercado ya lo está exigiendo</h3>
+      <p>Analistas, marketers, PMs, incluso vendedores con dashboards: todos los que saben SQL toman mejores decisiones más rápido.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🚀</div>
+      <h3>Multiplica tu conocimiento de IA</h3>
+      <p>Ya aprendiste IA. SQL es el puente entre esa teoría y los datos reales. Sin él, la IA flota en el aire.</p>
+    </div>
+  </div>
+</div>
+
+<!-- MÓDULOS -->
+<div class="modules-section">
+  <div class="modules-inner">
+    <div class="section-label" style="text-align:center; margin-bottom:14px;">EL RECORRIDO</div>
+    <h2 class="section-title" style="margin-bottom:48px;">4 clases. 0 relleno. 100% práctica.</h2>
+
+    <div class="module-item">
+      <div class="module-left">
+        <div class="module-num">01</div>
+        <div class="module-line"></div>
+      </div>
+      <div class="module-body">
+        <h3>Fundamentos & Consultas</h3>
+        <p>SELECT, FROM, WHERE. Tu primera conversación con los datos.</p>
+      </div>
+    </div>
+
+    <div class="module-item">
+      <div class="module-left">
+        <div class="module-num">02</div>
+        <div class="module-line"></div>
+      </div>
+      <div class="module-body">
+        <h3>Filtros & Ordenamiento</h3>
+        <p>ORDER BY, GROUP BY, HAVING. Dominá el orden del caos.</p>
+      </div>
+    </div>
+
+    <div class="module-item">
+      <div class="module-left">
+        <div class="module-num">03</div>
+        <div class="module-line"></div>
+      </div>
+      <div class="module-body">
+        <h3>JOINs & Subconsultas</h3>
+        <p>Conectá tablas, construí insights. La habilidad que separa al analista del curioso.</p>
+      </div>
+    </div>
+
+    <div class="module-item">
+      <div class="module-left">
+        <div class="module-num">04</div>
+      </div>
+      <div class="module-body" style="padding-bottom:0;">
+        <h3>Agregaciones & Modelado</h3>
+        <p>Transformá datos crudos en decisiones. El lenguaje que habla con la IA.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUOTE -->
+<div class="quote-section">
+  <blockquote>
+    "Los que sobrevivan la automatización no son los que evitaron la IA. Son los que aprendieron a trabajar <strong>con</strong> ella — y eso requiere entender los datos que la alimentan."
+  </blockquote>
+  <p class="quote-text">
+    Ya diste el primer paso aprendiendo IA. SQL es el segundo.<br>
+    Sin él, dependés de que alguien más te pase los datos.<br>
+    <span>Con él, sos quien toma las decisiones.</span>
+  </p>
+</div>
+
+<!-- CTA FINAL -->
+<section id="inscripcion">
+  <div class="section-label">SQLEsencial: Curso Express en 4 Clases</div>
+  <h2 class="cta-final-title">Empezá a hablarle<br><span>a los datos hoy.</span></h2>
+  <p class="cta-final-sub">4 clases prácticas · Desde cero · Aplicado a análisis real</p>
+  <div class="price-box">
+    <div class="price-label">INVERSIÓN TOTAL</div>
+    <div class="price-value">Gs. 400.000</div>
+    <div class="price-sub">IVA INCLUIDO</div>
+  </div>
+  <br>
+  <a href="#" class="cta-btn">INSCRIBIRME AHORA →</a>
+  <div class="cta-note">Cupos limitados · No esperés al último momento</div>
+</section>
+
+</body>
+</html>
         <h1 className="fade-up delay-2 glow" style={{
           fontSize: "clamp(36px, 7vw, 80px)",
           fontWeight: "700",
